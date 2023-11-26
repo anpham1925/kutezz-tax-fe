@@ -41,6 +41,33 @@ const soloScrape = async () => {
 const multiScrape = async () => {
   const list = await fetchFromApi(multiMst.value)
   console.log(list)
+
+  /* generate worksheet and workbook */
+
+
+  const worksheet = utils.json_to_sheet(list.map(row => [row.mst, row.name, row.comp, row.address]));
+  const workbook = utils.book_new();
+  utils.book_append_sheet(workbook, worksheet, "MST");
+
+  /* fix headers */
+  utils.sheet_add_aoa(worksheet, [["MST", "Tên", "Công ty", "Địa chỉ"]], { origin: "A1" });
+
+
+  /* calculate column width */
+  const mstMaxWidth = list.reduce((w, r) => Math.max(w, r.mst.length), 10);
+  const nameMaxWidth = list.reduce((w, r) => Math.max(w, r.name.length), 10);
+  const compMaxWidth = list.reduce((w, r) => Math.max(w, r.comp.length), 10);
+  const addressMaxWidth = list.reduce((w, r) => Math.max(w, r.address.length), 10);
+
+  worksheet["!cols"] = [
+    { wch: mstMaxWidth },
+    { wch: nameMaxWidth },
+    { wch: compMaxWidth },
+    { wch: addressMaxWidth }
+  ];
+
+  /* create an XLSX file and try to save to Presidents.xlsx */
+  writeFile(workbook, "output.xlsx", { compression: true });
 }
 </script>
 
