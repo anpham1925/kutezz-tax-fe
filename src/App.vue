@@ -45,7 +45,9 @@ const multiScrape = async () => {
   /* generate worksheet and workbook */
 
 
-  const worksheet = utils.json_to_sheet(list.map(row => [row.mst, row.name, row.comp, row.address]));
+  const worksheet = utils.json_to_sheet(list.map(
+    (row: Record<string, string>) => [row.mst, row.name, row.comp, row.address])
+  );
   const workbook = utils.book_new();
   utils.book_append_sheet(workbook, worksheet, "MST");
 
@@ -54,10 +56,10 @@ const multiScrape = async () => {
 
 
   /* calculate column width */
-  const mstMaxWidth = list.reduce((w, r) => Math.max(w, r.mst.length), 10);
-  const nameMaxWidth = list.reduce((w, r) => Math.max(w, r.name.length), 10);
-  const compMaxWidth = list.reduce((w, r) => Math.max(w, r.comp.length), 10);
-  const addressMaxWidth = list.reduce((w, r) => Math.max(w, r.address.length), 10);
+  const mstMaxWidth = list.reduce((w: number, r: Record<string, string>) => Math.max(w, r.mst.length), 10);
+  const nameMaxWidth = list.reduce((w: number, r: Record<string, string>) => Math.max(w, r.name.length), 10);
+  const compMaxWidth = list.reduce((w: number, r: Record<string, string>) => Math.max(w, r.comp.length), 10);
+  const addressMaxWidth = list.reduce((w: number, r: Record<string, string>) => Math.max(w, r.address.length), 10);
 
   worksheet["!cols"] = [
     { wch: mstMaxWidth },
