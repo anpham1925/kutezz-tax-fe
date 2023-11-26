@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 const singleMst = ref('0302218267')
 const soloResult = ref('')
-const multiMst = ref([])
+const multiMst = ref<string[]>([])
 const file = ref<File | null | undefined>()
 const handleFileChange = async ($event: Event) => {
   const fileList = ($event.target as HTMLInputElement).files || []
@@ -12,13 +12,11 @@ const handleFileChange = async ($event: Event) => {
     file.value = fileList[0]
     console.log('is it?')
     // const workbook = read(file.value.arrayBuffer())
-    const workbook = readFile(await file.value.arrayBuffer())
+    const workbook = readFile((await file.value.arrayBuffer()) as unknown as string)
 
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]
     const raw_data = utils.sheet_to_json(worksheet, { header: 1, raw: true })
-    console.log(raw_data)
-    const mstList = raw_data.map((x: string[]) => x[0])
-    console.log(mstList)
+    const mstList = raw_data.map((x: any) => x[0])
     multiMst.value = mstList
   }
 }
